@@ -75,5 +75,10 @@ named-checkzone infoftps.com named.flz
 #
 systemctl enable named
 systemctl restart named
-system status
+system status named
+
+# open firewall to add dns service
+firewall-cmd --permanent --add-service=dns
+firewall-cmd --reload
+firewall-cmd --list-services
 
