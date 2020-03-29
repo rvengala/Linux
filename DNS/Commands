@@ -1,0 +1,11 @@
+firewall-cmd --state
+systemctl stop firewalld
+systemctl disable firewalld
+systemctl mask --now firewalld
+firewall-cmd --state
+firewall-cmd --permanent --zone=public --add-port=53/udp
+firewall-cmd --permanent --zone=public --add-port=53/tcp
+firewall-cmd --permanent --zone=public --add-service=dns
+firewall-cmd --reload
+firewall-cmd --list-ports
+firewall-cmd --list-services
