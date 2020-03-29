@@ -1,1 +1,79 @@
 
+#
+cp -p /etc/named.conf /etc/named.conf.bkup 
+
+#
+cat /etc/named.conf
+//
+// named.conf
+//
+// Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
+// server as a caching only nameserver (as a localhost DNS resolver only).
+//
+// See /usr/share/doc/bind*/sample/ for example named configuration files.
+//
+
+options {
+        listen-on port 53 { 127.0.0.1; 192.168.0.130;192.168.1.130;192.168.10.130;10.104.0.130; };
+        directory       "/var/named";
+        allow-query     { any; };
+forwarders      {192.168.0.1;192.168.1.1;192.168.10.1;};
+};
+
+
+// Forward Lookup Zone
+zone "techzone.com" IN {
+        type master;
+        file "/var/named/named.flz";
+};
+
+
+// Reverse Lookup Zone
+zone "0.168.192.in-addr.arpa" IN {
+        type master;
+        file "/var/named/named.rlz";
+};
+
+#
+cd /var/named
+
+# 
+cat named.flz
+$TTL 1D
+@       IN SOA  devops.techzone.com. root.techzone.com. (
+                                17092015        ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+                    NS  devops.techzone.com.
+devops              A   192.168.0.130
+client1             A   192.168.0.131
+client2             A   192.168.0.132
+replserver          A   192.168.0.200
+
+#
+cat named.rlz
+$TTL 1D
+@       IN SOA  devops.techzone.com. root.techzone.com. (
+                                17092015        ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+        IN      NS      devops.techzone.com.
+devops          A       192.168.0.130
+130     IN      PTR     devops.techzone.com.
+131     IN      PTR     client1.techzone.com.
+132     IN      PTR     client2.techzone.com.
+200     IN      PTR     replserver.techzone.com.
+
+#
+named-checkzone infoftps.com named.rlz
+named-checkzone infoftps.com named.flz
+
+#
+systemctl enable named
+systemctl restart named
+system status
+
