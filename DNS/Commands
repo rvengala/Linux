@@ -1,3 +1,4 @@
+# Firewall Commands
 firewall-cmd --state
 systemctl stop firewalld
 systemctl disable firewalld
@@ -9,3 +10,8 @@ firewall-cmd --permanent --zone=public --add-service=dns
 firewall-cmd --reload
 firewall-cmd --list-ports
 firewall-cmd --list-services
+
+# ls Commands
+      ls -ltra 
+      ls -ltra -R 
+
